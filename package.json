@@ -1,0 +1,24 @@
+{
+  "name": "sukukata",
+  "version": "0.0.1-alpha",
+  "description": "Mencari sukukata di dalam perkataan Bahasa Melayu",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "coverage": "jest --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/izandotnet/sukukata.git"
+  },
+  "keywords": [
+    "suku",
+    "kata",
+    "sukukata"
+  ],
+  "author": "izandotnet",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^22.4.3"
+  }
+}
