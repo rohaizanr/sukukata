@@ -1,5 +1,4 @@
-
-[![CircleCI](https://img.shields.io/circleci/project/github/RedSparr0w/node-csgo-parser.svg)](https://circleci.com/gh/izandotnet/sukukata)
+[![CircleCI](https://circleci.com/gh/izandotnet/sukukata.svg?style=svg)](https://circleci.com/gh/izandotnet/sukukata)
 
 # <b>sukukata</b>
 Sebuah perisian Javascript untuk mencari sukukata di dalam perkataan Bahasa Melayu.
