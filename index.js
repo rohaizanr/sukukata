@@ -1,75 +1,178 @@
 'use strict';
-const polaSukukata = require('./polaSukukata');
-const pembetulan = require('./pembetulan');
 
 const hurufVokal = ['a', 'e', 'i', 'o', 'u'];
+const polaSukukata = [
+    'V',
+    'VK',
+    'KV',
+    'KVV',
+    'KVK',
+    'KKV',
+    'KKVK',
+    'KVKK',
+    'KKKV',
+    'KKKVK',
+    'KKVKK',
+    'KVKKK',
+];
+// const gabunganDibenarkan = [
+//     'pl',
+//     'bl',
+//     'kl',
+//     'gl',
+//     'fl',
+//     'sl',
+//     'pr',
+//     'br',
+//     'tr',
+//     'dr',
+//     'kr',
+//     'gr',
+//     'fr',
+//     'sr',
+//     'ps',
+//     'ks',
+//     'dw',
+//     'sw',
+//     'kw',
+//     'sp',
+//     'sm',
+//     'sn',
+//     'sk',
+//     'str',
+//     'spr',
+//     'skr',
+// ];
+const gabunganSalah = [
+    'pk',
+    'lb',
+    'tk',
+    'dk',
+    'db',
+    'nn',
+    'nl',
+    'lk',
+    'bk',
+    'kn',
+    'hn',
+    'ln',
+    'bn',
+    'tn',
+    'kl',
+    'rp',
+    'rf',
+    'tl',
+    'bj',
+    'ys',
+    'mp',
+    'mb',
+    'nt',
+    'nd',
+    'nc',
+    'nj',
+    'ŋk',
+    'ŋg',
+    'ns',
+    'ŋs',
+    'rb',
+    'rd',
+    'rg',
+    'rj',
+    'rm',
+    'rn',
+    'rl',
+    'rt',
+    'rk',
+    'rs',
+    'rc',
+    'st',
+    'sl',
+    'kt',
+    'ks',
+    'pt',
+    'ht',
+    'hk',
+    'hs',
+    'hb',
+    'hl',
+    'hy',
+    'hw',
+    'sh',
+    'mr',
+    'ml',
+    'lm',
+    'gn',
+    'np',
+    'rh',
+    'sb',
+    'sp',
+    'sm',
+    'km',
+    'ls',
+    'lj',
+    'lt',
+    'bd',
+    'gm',
+    'hd',
+];
 
 module.exports.toArray = function (input) {
-    const result = getMatchedRule(input.toLowerCase());
-    if (result !== undefined) {
-        return disassembler(input, result.disassemble);
-    }
-    return []; //rule not found, return empty array
+    const inputPola = constructPola(input.toLowerCase())
+    return findRule(input, inputPola);; //rule not found, return empty array
 }
 
-function getMatchedRule(input) {
+function constructPola(input) {
     // construct rule from input
     let constructType = '';
     for (let chr of input) {
         (hurufVokal.indexOf(chr) >= 0) ? constructType += 'V' : constructType += 'K';
     }
-    return findRule(input, constructType);
+    return constructType;
 }
 
-function findRule(input, type) {
-    const results = polaSukukata.filter((rule) => { return rule.type === type; });
-    if (results.length > 1) {
-        
-        if (input.slice(-2) === 'ui') {
-            return results[1];
-        }
-        // ny ng sy sh
-        if (input.indexOf('ny') > -1 || input.indexOf('ng') > -1 || input.indexOf('sy') > -1 || input.indexOf('sh') > -1) {
-            return results[1];
-        }
+// function checkGabunganDibenarkan(input) {
+//     let result = false;
+//     for (const item of gabunganDibenarkan) {
+//         if (item.indexOf(input) > -1) {
+//             return true;
+//         }
+//     }
+//     return gabunganDibenarkan.indexOf(input) > -1;
+// }
 
-        // check for false combination when result is more than 1
-        for (let result of results) {
-            if (!checkPembetulan(disassembler(input, result.disassemble))) {
-                // if don't have false combination then return the result
-                return result;
+function checkGabunganSalah(input) {
+    return gabunganSalah.includes(input.substring(0,2));
+}
+
+function checkPolaSukukata(input) {
+    return polaSukukata.indexOf(input) > -1;
+}
+
+function findRule(input, polaType) {
+    let result = [];
+    if (polaType.length > 0) {
+        let teruskan = true;
+        let ptr = 0;
+        let length = polaType.length;
+        while(teruskan) {
+            const checkPola = polaType.substring(ptr, length);
+            const checkInput = input.substring(ptr, length);
+            if (checkPolaSukukata(checkPola)) {
+                if(!checkGabunganSalah(checkInput)) {
+                    result.push(checkInput);
+                    length = length - checkInput.length;
+                    ptr = 0;
+                } else {
+                    ptr += 1;
+                }
+            } else {
+                ptr += 1;
+            }
+            if (length === 0) {
+                result.reverse();
+                teruskan = false;
             }
         }
-    } else {
-        return results[0];
     }
-}
-
-function checkPembetulan(checkDisassembler) {
-    for (let item of checkDisassembler) {
-        // get two character and check for false combination
-        for (let i = 0; i < item.length-1; i++) {
-            const twoChrs = item.substring(i, 2);
-            if (pembetulan.includes(twoChrs)) return true;
-        }
-    }
-}
-
-function disassembler(input, disassemble) {
-    // substitute input string into disassemble format, easier to split to array by +
-    let index = 0;
-    let substitute = '';
-    for (let chr of disassemble) {
-        if (chr !== '+'){
-            substitute += input[index];
-            index += 1;
-        } else {
-            substitute += chr;
-        }
-    }
-    if (substitute.indexOf('+') >= 0) {
-        return substitute.split('+');
-    } else {
-        return [substitute];
-    }
+    return result;
 }
