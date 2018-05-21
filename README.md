@@ -17,7 +17,7 @@ console.log(`${sukukata.toArray('Malaysia').length}`);
 // 3
 ```
 ## Sumbangan
-Projek ini masih di dalam pembangunan dan hanya boleh menampung sehingga.
+Projek ini masih di dalam pembangunan.
 <br />
 
 ### Langkah-langkah
@@ -31,7 +31,7 @@ Projek ini masih di dalam pembangunan dan hanya boleh menampung sehingga.
 Untuk memudahkan kerja penambahan aturan [index.test.js](https://github.com/izandotnet/sukukata/blob/master/__tests__/index.test.js)(Unit test), anda boleh gunakan aplikasi ini [sukukata-trainer](https://github.com/izandotnet/sukukata-trainer)
 
 ## Masalah
-Berikut adalah ayat-ayat yang belum dapat dileraikan dengan tepat.
+Berikut adalah contoh sukukata yang belum dapat dileraikan.
 ```javascript
 expect(sukukata.toArray('aaaaaaa')).toEqual([]);
 expect(sukukata.toArray('dialami')).toEqual(['di','a','la','mi']);
