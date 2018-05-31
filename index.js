@@ -5,45 +5,22 @@ const polaSukukata = [
     'V',
     'VK',
     'KV',
-    'KVV',
     'KVK',
+    'VKK',
     'KKV',
-    'KKVK',
     'KVKK',
+    'KKVK',
     'KKKV',
     'KKKVK',
     'KKVKK',
-    'KVKKK',
 ];
 // const gabunganDibenarkan = [
-//     'pl',
-//     'bl',
-//     'kl',
-//     'gl',
-//     'fl',
-//     'sl',
-//     'pr',
-//     'br',
-//     'tr',
-//     'dr',
-//     'kr',
-//     'gr',
-//     'fr',
-//     'sr',
-//     'ps',
-//     'ks',
-//     'dw',
-//     'sw',
-//     'kw',
-//     'sp',
-//     'sm',
-//     'sn',
-//     'sk',
-//     'str',
-//     'spr',
-//     'skr',
+// gh, kh, ng, ny dan sy
 // ];
 const gabunganSalah = [
+    'gk',
+    'gs',
+    'gg',
     'pk',
     'lb',
     'tk',
@@ -118,7 +95,9 @@ const gabunganSalah = [
 
 module.exports.toArray = function (input) {
     const inputPola = constructPola(input.toLowerCase())
-    return findRule(input, inputPola);; //rule not found, return empty array
+    let result = findRule(input, inputPola);
+    result = checkDiftong(result, inputPola);
+    return result;
 }
 
 function constructPola(input) {
@@ -130,22 +109,24 @@ function constructPola(input) {
     return constructType;
 }
 
-// function checkGabunganDibenarkan(input) {
-//     let result = false;
-//     for (const item of gabunganDibenarkan) {
-//         if (item.indexOf(input) > -1) {
-//             return true;
-//         }
-//     }
-//     return gabunganDibenarkan.indexOf(input) > -1;
-// }
-
 function checkGabunganSalah(input) {
-    return gabunganSalah.includes(input.substring(0,2));
+    if (!gabunganSalah.includes(input.substring(0,2))){
+        return gabunganSalah.includes(input.substring(1,3))
+    } else {
+        return true;
+    }
 }
 
 function checkPolaSukukata(input) {
     return polaSukukata.indexOf(input) > -1;
+}
+
+function checkDiftong(inputArray, inputPola) {
+    if (inputPola.includes('VV')) {
+        return inputArray;
+    } else {
+        return inputArray;
+    }
 }
 
 function findRule(input, polaType) {
@@ -154,6 +135,7 @@ function findRule(input, polaType) {
         let teruskan = true;
         let ptr = 0;
         let length = polaType.length;
+        let hangControl = 0
         while(teruskan) {
             const checkPola = polaType.substring(ptr, length);
             const checkInput = input.substring(ptr, length);
@@ -168,8 +150,13 @@ function findRule(input, polaType) {
             } else {
                 ptr += 1;
             }
+            hangControl += 1;
             if (length === 0) {
                 result.reverse();
+                teruskan = false;
+            }
+            if (hangControl === 100) {
+                console.log('hang control');
                 teruskan = false;
             }
         }
