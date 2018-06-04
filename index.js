@@ -14,10 +14,14 @@ const polaSukukata = [
     'KKKVK',
     'KKVKK',
 ];
-// const gabunganDibenarkan = [
-// gh, kh, ng, ny dan sy
-// ];
+const imbuhan = [
+    'me',
+    'mem',
+    'meng',
+    'di',
+];
 const gabunganSalah = [
+    'dn',
     'gk',
     'gs',
     'gg',
@@ -47,10 +51,7 @@ const gabunganSalah = [
     'nd',
     'nc',
     'nj',
-    'ŋk',
-    'ŋg',
     'ns',
-    'ŋs',
     'rb',
     'rd',
     'rg',
@@ -74,7 +75,6 @@ const gabunganSalah = [
     'hl',
     'hy',
     'hw',
-    'sh',
     'mr',
     'ml',
     'lm',
@@ -93,15 +93,31 @@ const gabunganSalah = [
     'hd',
 ];
 
+const gabunganDiftong = [
+    'ia',
+    'io',
+    'oa',
+    'ai',
+    'au',
+    'ae',
+    'oi',
+    'ui',
+    'ua',
+    'iu',
+    'ea',
+]
+
 module.exports.toArray = function (input) {
     const inputPola = constructPola(input.toLowerCase())
     let result = findRule(input, inputPola);
-    result = checkDiftong(result, inputPola);
+    
+    if (inputPola.includes('VV')) {
+        result = checkDiftong(result, inputPola);
+    }
     return result;
 }
 
 function constructPola(input) {
-    // construct rule from input
     let constructType = '';
     for (let chr of input) {
         (hurufVokal.indexOf(chr) >= 0) ? constructType += 'V' : constructType += 'K';
@@ -122,11 +138,38 @@ function checkPolaSukukata(input) {
 }
 
 function checkDiftong(inputArray, inputPola) {
-    if (inputPola.includes('VV')) {
-        return inputArray;
-    } else {
-        return inputArray;
+    let result = [];
+    let count = 0;
+    for (let item of inputArray) {
+        count += 1;
+        if (hurufVokal.includes(item)) {
+            if (result.length > 0) {
+                let prevItem = result.pop();
+                let isDiftong = `${prevItem.substring(prevItem.length - 1 , prevItem.length)}${item}`;
+                if (gabunganDiftong.includes(isDiftong)) {
+                    // check last word not diftong
+                    if (count === inputArray.length) {
+                        if(imbuhan.includes(result[0])) {
+                            result.push(prevItem);
+                            result.push(item);
+                        } else {
+                            result.push(`${prevItem}${item}`);
+                        }
+                    } else {
+                        result.push(`${prevItem}${item}`);
+                    }
+                } else {
+                    result.push(prevItem);
+                    result.push(item);
+                }
+            } else {
+                result.push(item);
+            }
+        } else {
+            result.push(item);
+        }
     }
+    return result;
 }
 
 function findRule(input, polaType) {
