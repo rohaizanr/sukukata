@@ -21,6 +21,7 @@ const imbuhan = [
     'di',
 ];
 const gabunganSalah = [
+    'mk',
     'dn',
     'gk',
     'gs',
